@@ -45,8 +45,17 @@ class Agent{
     float s=constrain(amp*255, MIN_SATURATION, 255);
     
     this.c=color(this.hue, s, b);
-    println(amp, pan);
+    //println(amp, pan);
   }  
+  void mute(boolean muted){
+    if(muted){
+      this.sample.amp(0);
+      this.sample.pause();
+    }
+    else{
+      this.sample.loop();
+    }
+  }
   void draw(){
     fill(c);
     noStroke();

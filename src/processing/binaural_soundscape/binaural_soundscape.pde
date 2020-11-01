@@ -5,7 +5,7 @@ import java.util.Date;
 boolean IMPORT_JSON=true; // true and imports the values from a json file (creates it if it does not exist)
 float MINFREQ= 1/60.0; // minimum frequency to get a full orbit 1/(orbit duration)
 float MAXFREQ= 1/30.0;  // maximum frequency to get a full orbit 1/(orbit duration)
-float OPACITY_BACKGROUND=100; // opacity of the final background
+float OPACITY_BACKGROUND=3; // opacity of the final background
 float LIMITPAN=0.99; // maximum amount of pan, from 0 (alwyas centerd) to 1 (full range of pan)
 float MINAMP=0.1; // minimum aplitude, corresponds to -20 dB
 float MIN_BRIGHTNESS=100; // minimum level of brightness when the sample is far from the center
@@ -26,7 +26,7 @@ float MAXAXIS;
 float MAXDIST;
 PVector center;
 float t;
-
+boolean mute=false;
 ArrayList<Agent> movers;
 String json_fn="data/config.json";
 
@@ -108,8 +108,13 @@ void loadJSON(){
   if(!json.isNull("CENTER_RADIUS")){
       CENTER_RADIUS = json.getFloat("CENTER_RADIUS");
   }
+}
 
-
+void mousePressed(){
+  mute=!mute;
+  for(Agent mover: movers){    
+      mover.mute(mute);    
+  }    
 }
 
 void setParameters(){
@@ -155,16 +160,15 @@ void draw(){
   rectMode(CORNER);
   fill(0,OPACITY_BACKGROUND);
   rect(0,0,width, height);
-  t+=1/frameRate;
-  
-  colorMode(HSB);
-  fill(255);
+  stroke(255);
+  if(mute){fill(0); }
+  else{fill(255); }
   ellipse(center.x, center.y, CENTER_RADIUS, CENTER_RADIUS);    
-
-  for(Agent mover: movers){
-    mover.update(t);
-    mover.draw(); 
-    
-   
+  colorMode(HSB);
+  if(mute){return ;};
+  t+=1/frameRate;  
+  for(Agent mover: movers){    
+      mover.update(t);    
+      mover.draw();    
   }
 }
