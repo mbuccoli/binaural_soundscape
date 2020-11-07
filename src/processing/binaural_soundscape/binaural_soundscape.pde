@@ -3,11 +3,12 @@ import java.util.Date;
 
 // PARAMETERS//
 boolean IMPORT_JSON=true; // true and imports the values from a json file (creates it if it does not exist)
-float MINFREQ= 1/60.0; // minimum frequency to get a full orbit 1/(orbit duration)
-float MAXFREQ= 1/30.0;  // maximum frequency to get a full orbit 1/(orbit duration)
+float MINTIME= 30.0; // minimum duration of a  full orbit 
+float MAXFTIME= 60.0;  // maximum duration of  a full orbit 
 float OPACITY_BACKGROUND=3; // opacity of the final background
 float LIMITPAN=0.99; // maximum amount of pan, from 0 (alwyas centerd) to 1 (full range of pan)
-float MINAMP=0.1; // minimum aplitude, corresponds to -20 dB
+float MINAMP=-20; // minimum aplitude, corresponds to -20 dB
+float MAXAMP=-3;
 float MIN_BRIGHTNESS=100; // minimum level of brightness when the sample is far from the center
 float MIN_SATURATION=150; // minimum level of saturation when the sample is far from the center
 float MINAXIS_FACTOR=0.35; // scale w.r.t. the width to the orbit size
@@ -32,8 +33,8 @@ String json_fn="data/config.json";
 
 void createDefaultJSON(){
   JSONObject json= new JSONObject();
-  json.setFloat("MINFREQ", 1/60.0);
-  json.setFloat("MAXFREQ", 1/30.0);
+  json.setFloat("MINTIME", 30.0);
+  json.setFloat("MAXTIME", 60.0);
   json.setFloat("OPACITY_BACKGROUND",10);
   json.setFloat("LIMITPAN",0.99);
   json.setFloat("MINAMP",0.1);// -20 dB
@@ -63,11 +64,11 @@ void loadJSON(){
     return;
   }
   
-  if(!json.isNull("MINFREQ")){
-      MINFREQ = json.getFloat("MINFREQ");
+  if(!json.isNull("MINTIME")){
+      MINTIME = json.getFloat("MINTIME");
   }
-  if(!json.isNull("MAXFREQ")){
-      MAXFREQ = json.getFloat("MAXFREQ");
+  if(!json.isNull("MAXTIME")){
+      MAXTIME = json.getFloat("MAXTIME");
   }
   if(!json.isNull("OPACITY_BACKGROUND")){
       OPACITY_BACKGROUND = json.getFloat("TRANSPARENCY_BACKGROUND");
@@ -149,6 +150,7 @@ void setup(){
        println("Can't load ", filenames[i], "because it is not a wav file");
        continue;  
      }
+     println(path+"/"+filenames[i]);
      sample= new SoundFile(this, path+"/"+filenames[i]);     
      movers.add(new Agent(sample));
   }
@@ -158,17 +160,22 @@ void setup(){
 
 void draw(){
   rectMode(CORNER);
-  fill(0,OPACITY_BACKGROUND);
+  fill(0);
   rect(0,0,width, height);
   stroke(255);
   if(mute){fill(0); }
   else{fill(255); }
   ellipse(center.x, center.y, CENTER_RADIUS, CENTER_RADIUS);    
   colorMode(HSB);
+  for(Agent mover: movers){    
+      if(!mute){mover.update(t);}
+      mover.drawOrbit();    
+  }
+  for(Agent mover: movers){    
+      if(!mute){mover.update(t);}
+      mover.drawPlanet();    
+  }
   if(mute){return ;};
   t+=1/frameRate;  
-  for(Agent mover: movers){    
-      mover.update(t);    
-      mover.draw();    
-  }
+  
 }
