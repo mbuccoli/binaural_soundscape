@@ -1,2 +1,4 @@
 src/processing/binaural_soundscape/application.windows*/**
 binaries/**
+src/processing/binaural_soundscape/data/*.ogg
+src/processing/binaural_soundscape/data/*.wav
