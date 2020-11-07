@@ -4,7 +4,7 @@ import java.util.Date;
 // PARAMETERS//
 boolean IMPORT_JSON=true; // true and imports the values from a json file (creates it if it does not exist)
 float MINTIME= 30.0; // minimum duration of a  full orbit 
-float MAXFTIME= 60.0;  // maximum duration of  a full orbit 
+float MAXTIME= 60.0;  // maximum duration of  a full orbit 
 float OPACITY_BACKGROUND=3; // opacity of the final background
 float LIMITPAN=0.99; // maximum amount of pan, from 0 (alwyas centerd) to 1 (full range of pan)
 float MINAMP=-20; // minimum aplitude, corresponds to -20 dB
@@ -25,6 +25,8 @@ float MINRADIUS;
 float MINAXIS;
 float MAXAXIS;
 float MAXDIST;
+float MASTER_AMP=1;
+float STEPS_AMP=10.0;
 PVector center;
 float t;
 boolean mute=false;
@@ -52,11 +54,10 @@ void createDefaultJSON(){
 }
 
 void loadJSON(){
-  boolean json_exist=false;
   JSONObject json;
   try{
      json= loadJSONObject(json_fn);
-     json_exist=true;
+     
   }
   catch (Exception e) {
     createDefaultJSON();
@@ -132,6 +133,11 @@ void setParameters(){
   
 }
 
+void mouseWheel(MouseEvent event) {
+  if(mute){return;} // not changing amp during mute
+  float e = event.getCount();
+  MASTER_AMP=constrain(MASTER_AMP-e/STEPS_AMP,0.01,1);  
+}
 
 void setup(){
   size(720, 720);

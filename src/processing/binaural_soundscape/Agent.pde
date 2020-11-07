@@ -8,6 +8,7 @@ float log10 (float x) {
 
 float MAXSTROKE=5;
 float MINSTROKE=1;
+float TOTALAMP=1;
 class Agent{
   PVector position, axis, phase;
   float radius;
@@ -19,7 +20,7 @@ class Agent{
   float sw;
   Agent(SoundFile sample){
     this.sample=sample;
-    this.freq=random(1.0/MAXIME, 1.0/MINTIME);
+    this.freq=random(1.0/MAXTIME, 1.0/MINTIME);
     this.phase=new PVector(0,0);
     this.phase.x=random(-PI, PI);    
     this.phase.y=this.phase.x+random(MIN_PHASE_DIFF, PI-MIN_PHASE_DIFF);
@@ -61,7 +62,7 @@ class Agent{
     
     
     this.sample.pan(pan);
-    this.sample.amp(amp);
+    this.sample.amp(MASTER_AMP*amp);
     max_amp=max(amp, max_amp);
     min_amp=min(amp, min_amp);
    
@@ -84,6 +85,8 @@ class Agent{
       this.sample.loop();
     }
   }
+  
+  
   void drawOrbit(){
     stroke(this.c);
     strokeWeight(this.sw);
