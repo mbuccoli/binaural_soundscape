@@ -32,9 +32,6 @@ You can customize your soundscape in different ways. Fist of all, you can choose
 - ```MINAMP```: 0.10000000149011612,
 - ```MAXAXIS_FACTOR```: 0.949999988079071,
 - ```MAXFREQ```: 0.03333333507180214
-}
-
-```
 
 
 ### Support for mp3 files
@@ -43,7 +40,6 @@ If you have an mp3 decoder installed in your system, you can use mp3s by changin
 ```
 if(!filenames[i].endsWith(".wav")){
 ```
-
 into
 
 ```
